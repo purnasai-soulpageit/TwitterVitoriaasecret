@@ -119,7 +119,7 @@ def gettweetsaday():
     tweetaday  = tweetaday.reset_index()
     return render_template('index.html', title="page", jsonfile=json.dumps(tweetaday.to_dict('dict')))
 
-@app.route('/emotionpie', methods=("POST", "GET"))
+@app.route('/sentipie', methods=("POST", "GET"))
 def emotion():
     df = read_data(text)
     data1 = clean(df)
