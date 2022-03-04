@@ -60,3 +60,15 @@ def getemoji(data1):
 		all_tweets.append(cleaned_tweet)
 	emoji_summary = adv.extract_emoji(all_tweets)
 	return emoji_summary['top_emoji']
+
+def preprocess(data1):
+	full_cleaned_tweets = []
+	for tweet in data1['tweet']:
+		lower_tweet = tweet.lower() #lower text
+		no_url_tweet = remove_URL(lower_tweet) # remove urls
+		no_mentions_tweet = re.sub("@[A-Za-z0-9_]+","", no_url_tweet) #remove mentions
+		no_hashtag_tweet = re.sub("#[A-Za-z0-9_]+","", no_mentions_tweet) #remove hashtags
+		no_emoji_tweet = re.sub(r"[^a-zA-Z0-9]", " ",no_hashtag_tweet) #just alphanumeric
+		striped_tweet = " ".join(no_emoji_tweet.split()) #stipped longer white space
+		full_cleaned_tweets.append(striped_tweet)
+	return full_cleaned_tweets

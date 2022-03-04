@@ -112,7 +112,8 @@ def gettweetsaday():
 def emotion():
     df = read_data()
     data1 = clean(df)
-    emotion = get_sentiment(data1) 
+    cleaned_tweets =  preprocess(data1)
+    emotion = get_sentiment(cleaned_tweets) 
     emotions = [ ]
     for i in emotion:
         emotions.append(i[0])
