@@ -1,5 +1,5 @@
 # TwitterVitoriaasecret
-
+Implemented in flask
 
 ### installations:
 - tweepy
@@ -36,19 +36,17 @@ for the 4 big plot of hashtags
 ```/location``` 
 for maps visualization
 
-
 ```/emoji```
 for emoji plot visualization
 
 ```/lang```
 for language plot visualization
 
-
-```/emotionpie```
+```/sentipie```
 for first big plot of emotion visualization
 
 ### improvements:
-used global variable to keep hashtag in memory
+should avoid using global variable to keep hashtag in memory
 further feedback
 
 ### Note:
