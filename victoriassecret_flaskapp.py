@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 import advertools as adv
 from task_code import *
 from model import *
+from scrapper import *
 import os
 import json
 
@@ -10,13 +11,24 @@ import json
 app = Flask(__name__)
 app.config['IMG_FOLDER'] = "static/images/"
 
+text = ""
 @app.route('/')
 def hello():
-    return "hello world"
+    return render_template('form.html')
+
+# https://stackoverflow.com/questions/12277933/send-data-from-a-textbox-into-flask
+@app.route('/', methods=['POST'])
+def my_form_post():
+    global text
+    text = request.form['text']
+    processed_text = text.lower()
+    df = get_tweets(processed_text)
+    return render_template('indexdf.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
 
 @app.route('/data', methods=("POST", "GET"))
 def html_table():
-    df = read_data()
+    print("textttttttttttttttttttttttttttttt:", text)
+    df = read_data(text)
     df = df.head()
     return render_template('index.html', title="page", jsonfile=json.dumps(df.to_dict('dict')))
 
@@ -29,7 +41,7 @@ def html_table():
 
 @app.route('/more_tweeters', methods = ("POST","GET"))
 def more_tweeters():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     # top 10 users with more tweets
     data1['user_screen_name'] = data1['user_screen_name'].str.replace("b'","")
@@ -43,14 +55,14 @@ def more_tweeters():
 
 @app.route('/wordfreq', methods = ("POST","GET"))
 def wordfrequency():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     df  = word_frequency(data1)
     return render_template('index.html', title="page", jsonfile=json.dumps(df.to_dict('dict')))
 
 @app.route('/wordcloud', methods = ("POST","GET"))
 def wordcloud():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     data1['tweet']  = data1['tweet'].str.replace("\n"," ")
     all_hashtags  =[]
@@ -61,7 +73,6 @@ def wordcloud():
     hashtag_counts = collections.Counter(flatten_hashtags)
     hashtags = []
     counts = []
-    print(hashtag_counts,"hiiiiiiiiiiiiiiiiiii")
     for hashtag,count in hashtag_counts.items():
         hashtags.append(hashtag), counts.append(count)
     hashtag_df = pd.DataFrame({'hashtags': hashtags,'count': counts})
@@ -69,7 +80,7 @@ def wordcloud():
 
 @app.route('/location', methods = ("POST","GET"))
 def getloc():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     locs = data1['userlocation'].str.replace("b''","N/A").str.replace("b'","").str.replace("'","").value_counts()
     loc_df = pd.DataFrame({"location":locs.index, "count":locs.values})
@@ -77,7 +88,7 @@ def getloc():
 
 @app.route('/emoji', methods = ("POST","GET"))
 def getemojidf():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     emojidf = getemoji(data1)
     emoji = []
@@ -90,7 +101,7 @@ def getemojidf():
 
 @app.route('/lang', methods = ("POST","GET"))
 def getlang():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     lang = data1['lang'].value_counts(ascending = False).index
     count = data1['lang'].value_counts(ascending = False).values
@@ -99,7 +110,7 @@ def getlang():
 
 @app.route('/daytweets', methods = ("POST","GET"))
 def gettweetsaday():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     data1['time']  = pd.to_datetime(data1['time'])
     data1['day'] = data1['time'].dt.day
@@ -110,7 +121,7 @@ def gettweetsaday():
 
 @app.route('/emotionpie', methods=("POST", "GET"))
 def emotion():
-    df = read_data()
+    df = read_data(text)
     data1 = clean(df)
     cleaned_tweets =  preprocess(data1)
     emotion = get_sentiment(cleaned_tweets) 

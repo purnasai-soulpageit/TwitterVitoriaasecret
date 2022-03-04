@@ -1,8 +1,25 @@
 # TwitterVitoriaasecret
 
+
+### installations:
+- tweepy
+- requests
+- configparser
+- pandas
+- numpy 
+- json
+- urllib
+- torch
+- csv
+- scipy
+- transformers
+
+### command to run:
+python3 victoriassecret_flaskapp.py
+
 ### USE the below links:
 ```/```
-hello world
+takes input hashtag and returns tweets dataframe
 
 ```/data```
 prints top 5 rows of the dataset
@@ -29,3 +46,6 @@ for language plot visualization
 
 ```/emotionpie```
 for first big plot of emotion visualization
+
+### improvements:
+used global variable to keep hashtag in memory

@@ -13,8 +13,8 @@ warnings.filterwarnings("ignore")
 plt.style.use('fivethirtyeight')
 
 
-def read_data():
-	data = pd.read_csv("/home/purna/PURNA_OFFICE/Task-37 Twitter_sentement_analysis/vitoriassecret_data/2000_rows_victoriadata_recent.csv")
+def read_data(querry):
+	data = pd.read_csv("twitter_"+str(querry)+"data.csv")
 	data1= data.copy()
 	return data1
 
@@ -23,7 +23,6 @@ def clean(data1):
 	data1 = data1.drop('user_timezone',axis = 1) # 0 values
 	data1 = data1.drop('user_id', axis = 1)
 	data1 = data1.drop('tweet_id', axis = 1)
-	data1 = data1.drop('tweet_encoded', axis  =1) # same as tweet column
 	data1 = data1.drop('geo_enabled', axis = 1) # still had location, when set to False
 	data1 = data1.drop('geo', axis = 1) # only 3rows had information
 	data1 = data1.drop('cords', axis  =1) # geo and cords columns are same
@@ -37,7 +36,7 @@ def remove_URL(sample):
 def word_frequency(data1):
 	all_tweets = []
 	for tweet in data1['tweet']:
-		cleaned_tweet = remove_URL(tweet).replace("#victoriassecret","").replace("#","").replace("\'","").lower()
+		cleaned_tweet = remove_URL(tweet).replace("#","").replace("\'","").lower()
 		all_tweets.append(cleaned_tweet)
 
 	tokened_text = [text.split(" ") for text in all_tweets]
@@ -56,7 +55,7 @@ def word_frequency(data1):
 def getemoji(data1):
 	all_tweets = []
 	for tweet in data1['tweet']:
-		cleaned_tweet = remove_URL(tweet).replace("#victoriassecret","").replace("#","").replace("\'","").lower()
+		cleaned_tweet = remove_URL(tweet).replace("#","").replace("\'","").lower()
 		all_tweets.append(cleaned_tweet)
 	emoji_summary = adv.extract_emoji(all_tweets)
 	return emoji_summary['top_emoji']

@@ -32,7 +32,6 @@ model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 #tokenizer.save_pretrained(MODEL)
 #model.save_pretrained(MODEL)
 
-
 def get_sentiment(cleanedtweets):
     loader = torch.utils.data.DataLoader(cleanedtweets, batch_size=25)
 
